@@ -1,0 +1,25 @@
+{
+    "users": [
+        {
+            "firstName": "John",
+            "lastName": "Goodman",
+            "username": "goodJOHN",
+            "password": "123",
+            "budget": 2000
+        },
+        {
+            "firstName": "Elon",
+            "lastName": "Musk",
+            "username": "Martian",
+            "password": "123",
+            "budget": 3000
+        },
+        {
+            "firstName": "Arthur",
+            "lastName": "Dent",
+            "username": "artDent",
+            "password": "ad42",
+            "budget": 4200
+        }
+    ]
+}

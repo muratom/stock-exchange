@@ -1,0 +1,36 @@
+{
+    "stocks": [
+        {
+            "name": "Amazon",
+            "symbol": "AMZN",
+            "price": 3676.57,
+            "amount": 506440000,
+            "maxStep": 100,
+            "distributionLaw": "Normal"
+        },
+        {
+            "name": "Alphabet",
+            "symbol": "GOOGL",
+            "price": 2978.53,
+            "amount": 300810000,
+            "maxStep": 40,
+            "distributionLaw": "Normal"
+        },
+        {
+            "name": "Yandex",
+            "symbol": "YNDX",
+            "price": 81.05,
+            "amount": 323800000,
+            "maxStep": 20,
+            "distributionLaw": "Normal"
+        },
+        {
+            "name": "Apple",
+            "symbol": "AAPL",
+            "price": 160.55,
+            "amount": 16530170000,
+            "maxStep": 10,
+            "distributionLaw": "Normal"
+        }
+    ]
+}
