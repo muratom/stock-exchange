@@ -25,25 +25,37 @@ export class LoginForm extends Component {
       <div>
         <form onSubmit={this.onSubmit} className={styles.form}>
           <p>
-            <TextField label="Username" variant="outlined" className={styles.inputs} InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <AccountCircle />
-                </InputAdornment>
-              ),
-            }}/>
+            <TextField label="Username"
+                       variant="outlined"
+                       className={styles.inputs}
+                       InputProps={{
+                         startAdornment: (
+                           <InputAdornment position="start">
+                             <AccountCircle />
+                           </InputAdornment>
+                         )
+                       }}
+            />
           </p>
           <p>
-            <TextField type="password" label="Password" variant="outlined" className={styles.inputs} InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Password />
-                </InputAdornment>
-              ),
-            }}/>
+            <TextField type="password"
+                       label="Password"
+                       variant="outlined"
+                       className={styles.inputs}
+                       InputProps={{
+                         startAdornment: (
+                           <InputAdornment position="start">
+                             <Password />
+                           </InputAdornment>
+                         )
+                       }}
+            />
           </p>
           <p>
-            <Button variant="outlined" className={styles.inputs}>Enter</Button>
+            <Button variant="outlined"
+                    className={styles.inputs}>
+              Enter
+            </Button>
           </p>
         </form>
       </div>

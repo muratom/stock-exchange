@@ -13,7 +13,7 @@ export class Header extends Component {
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h5" component="div" sx={{ fontWeight: "bold", margin: "0 auto" }}>
-              STOCK EXCHANGE
+               STOCK EXCHANGE
             </Typography>
           </Toolbar>
         </AppBar>
