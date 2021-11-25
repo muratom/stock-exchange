@@ -28,9 +28,11 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Place for routes
+// Routes
 const loginRouter = require("./routes/login");
 app.use("/", loginRouter);
+const usersRouter = require("./routes/users");
+app.use("/user", usersRouter);
 
 // Socket
 let activeUsers = [];
@@ -40,10 +42,9 @@ let stocks = require("./data/stocks.json").stocks;
 let settings = require("./data/settings.json").settings;
 
 io.on("connection", (socket) => {
-  console.log("New user connected");
-
   socket.on("greet-user", (user) => {
     activeUsers.push(user);
+    console.log("Add user", user.username);
   });
 });
 

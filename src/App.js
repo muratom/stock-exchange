@@ -6,7 +6,7 @@ import { Header } from "./header/Header"
 
 import { LoginForm } from "./login/LoginForm";
 import { Admin } from "./admin/Admin";
-import { User } from "./user/User";
+import User from "./user/User";
 
 // TODO: use Redux to add routing capability
 export class App extends Component {
