@@ -1,19 +1,25 @@
 const express = require("express");
-const app = express();
-const http = require("http");
-const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server);
+const { Server } = require("socket.io")
 
 const port = 8000;
+
+const app = express();
+const httpServer = app.listen(port, () => {
+  console.log(`HTTP server is starting listening on port ${port}`);
+});
+const io = new Server(httpServer, {
+  cors: {
+    origin: "http://localhost:3000"
+  }
+});
 
 const cors = require("cors");
 const corsOption = {
   credentials: true,
   origin: "http://localhost:3000",
   methods: ["GET", "PUT", "POST", "DELETE"],
-  allowedHeaders: ["Authorization", "X-Requested-With",
-    "X-HTTP-Method-Override", "Content-Type", "Cache-Control", "Accept"],
+  // allowedHeaders: ["Authorization", "X-Requested-With",
+  //   "X-HTTP-Method-Override", "Content-Type", "Cache-Control", "Accept"],
 };
 
 app.use(cors(corsOption));
@@ -34,11 +40,14 @@ let stocks = require("./data/stocks.json").stocks;
 let settings = require("./data/settings.json").settings;
 
 io.on("connection", (socket) => {
+  console.log("New user connected");
+
   socket.on("greet-user", (user) => {
     activeUsers.push(user);
   });
 });
 
-app.listen(port, () => {
-  console.log(`HTTP server is starting listening on port ${port}`);
-});
+
+
+
+

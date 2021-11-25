@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+
+import {BrowserRouter as Router, Navigate, Route, Routes} from "react-router-dom";
 
 import { Header } from "./header/Header"
-import { LoginForm } from "./login/LoginForm";
 
+import { LoginForm } from "./login/LoginForm";
+import { Admin } from "./admin/Admin";
+import { User } from "./user/User";
+
+// TODO: use Redux to add routing capability
 export class App extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {}
   }
 
   render() {
@@ -18,9 +21,11 @@ export class App extends Component {
         <Router>
           <div>
             <Routes>
-              <Route path="/" element={<Navigate to="/login"/>}/>
+              <Route path="/" element={<Navigate to="/login" />}/>
               <Route path="/login" element={<LoginForm />} />
-              <Route path="/test" element={<h3>Test passed!</h3>} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/user/:username" element={<User />} />
+              <Route path="*" element={<h1 style={{margin: "0 auto"}}>Not found</h1>} />
             </Routes>
           </div>
         </Router>

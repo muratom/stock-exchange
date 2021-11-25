@@ -1,8 +1,17 @@
+.container {
+
+}
+
 .form {
-    width: 20%;
-    margin: 10px auto;
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*align-items: center;*/
+    /*flex-wrap: wrap;*/
+    /*height: 60vh;*/
+    width: 25rem;
+    margin: 0 auto;
 }
 
 .inputs {
-    width: 100%;
+    margin: 10px 0;
 }

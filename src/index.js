@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router } from "react-router-dom";
 
 import './index.css';
-import { Provider } from "react-redux";
-import { Map } from "immutable"
-import { App } from "./App.js"
-import { createStore } from "redux";
 
-// import {BrowserRouter as Router} from "react-router-dom";
+import { App } from "./App.js"
+
+// Redux
+// import { Provider } from "react-redux";
+// import { Map } from "immutable"
+// import { createStore } from "redux";
 
 // let reducer = function(state = Map(), action) {
 //   switch (action.type) {
