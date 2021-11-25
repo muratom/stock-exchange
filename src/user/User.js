@@ -1,23 +1,21 @@
-import React, {Component, useEffect} from "react";
+import React, {Component, useEffect, useRef} from "react";
 
 import { io } from "socket.io-client";
 import {useParams} from "react-router-dom";
 
-function User(props) {
-  const socket = io("http://localhost:8000");
-  socket.on("connect", () => {
-    console.log("Client: connect is established");
-  });
+const SOCKET_URL = "http://localhost:8000";
 
+function User(props) {
   const params = useParams();
   const urlUsername = params.username;
 
-  console.log("USER")
-
+  const socketRef = useRef(null);
   useEffect(() => {
-    console.log(socket.id);
-  },
-    [socket]);
+    socketRef.current = io(SOCKET_URL);
+    socketRef.current.on("connect", () => {
+      console.log("Client: connection is established");
+    });
+  }, []);
 
   return (
     <div>
