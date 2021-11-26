@@ -131,6 +131,12 @@ class User extends Component {
         });
       }
     });
+
+    this.socket.on("update-prices", (stocks) => {
+      this.setState((state, props) => {
+        return { stocks: stocks };
+      });
+    });
   }
 
   // componentDidUpdate(prevProps, prevState) {}
@@ -165,11 +171,17 @@ class User extends Component {
   }
 
   render() {
+    let profitPercentage = Math.round((this.state.user.curBudget - this.state.user.startBudget) / this.state.user.startBudget * 10000) / 100;
+    if (profitPercentage > 0) {
+      profitPercentage = `+${profitPercentage}`;
+    } else {
+      profitPercentage = `-${profitPercentage}`;
+    }
     return (
       <div>
         <h3>Welcome, { this.state.user.firstName }!</h3>
         <p>Start budget: ${ this.state.user.startBudget }</p>
-        <p>Current budget: ${ this.state.user.curBudget } ({Math.round((this.state.user.curBudget - this.state.user.startBudget) / this.state.user.startBudget * 10000) / 100}%)</p>
+        <p>Current budget: ${ this.state.user.curBudget } ({profitPercentage}%)</p>
         <Stocks socket={this.socket}
                 stocks={this.state.stocks}
                 handleBuyDialogOpen={this.handleBuyDialogOpen}/>
@@ -190,42 +202,3 @@ class User extends Component {
 }
 
 export default withRouter(User);
-
-// function User(props) {
-//   const params = useParams();
-//   const urlUsername = params.username;
-//
-//   const [user, setUser] = useState({});
-//
-//   const socketRef = useRef(null);
-//   useEffect(  () => {
-//     console.log("Fetching the data from the server");
-//     fetch(`${SOCKET_URL}/user/${urlUsername}`, { method: "GET" })
-//       .then(res => res.json())
-//       .then(res => {
-//         setUser(res);
-//       })
-//   }, []);
-//
-//   useEffect(() => {
-//     socketRef.current = io(SOCKET_URL);
-//     socketRef.current.on("connect", () => {
-//       console.log("Client: connection is established");
-//     });
-//     console.log(user)
-//     socketRef.current.emit("greet-user", user);
-//   }, [user]);
-//
-//   // const click = (e) => {
-//   //   setUser({...user, firstName: "Tom"});
-//   // }
-//
-//   return (
-//     <div>
-//       <h3>Page of { urlUsername }</h3>
-//       {/*<button onClick={click}>Click me</button>*/}
-//     </div>
-//   )
-// }
-//
-// export { User }

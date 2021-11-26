@@ -48,11 +48,18 @@ users.forEach(user => {
   user.purchasedStocks = [];
 });
 
+let timer = null;
+
 io.on("connection", (socket) => {
   socket.on("greet-user", user => {
     activeUsers.push(user);
     socket["username"] = user.username;
     console.log("Add user", user.username);
+  });
+
+  socket.on("greet-admin", () => {
+    socket.emit("send-active-users", users);
+    console.log("Add admin");
   });
 
   socket.on("disconnect", () => {
@@ -85,7 +92,6 @@ io.on("connection", (socket) => {
     let exchangeStocksToBuy = stocks.find(obj => {
       return obj.symbol === symbol;
     });
-
     if (requestedAmount > exchangeStocksToBuy.amount) {
       socket.emit("buy-stocks-rejected", "Exceeding the available amount of stocks");
       return;
@@ -145,7 +151,70 @@ io.on("connection", (socket) => {
 
     io.emit("sell-stocks-accepted", user, exchangeStocks)
   });
+
+  socket.on("start-bidding", () => {
+    let delta;
+    timer = setInterval(() => {
+      for (let stock of stocks) {
+        switch(stock.distributionLaw) {
+          case "Normal":
+            delta = getNormalRandom(stock.maxStep);
+            if (stock.price + delta > 0) {
+              stock.price += delta
+            } else {
+              stock.price += stock.maxStep
+            }
+            break;
+          case "Uniform":
+            delta = getUniformRandom(stock.maxStep);
+            if (stock.price + delta > 0) {
+              stock.price += delta
+            } else {
+              stock.price += stock.maxStep
+            }
+            break;
+          default:
+            break;
+        }
+      }
+      io.emit("update-prices", stocks);
+    }, settings.recalcCostDelaySec * 1000)
+  });
+
+  socket.on("change-distribution-law", (symbol, law) => {
+    let stocksToUpdate = stocks.find(obj => {
+      return obj.symbol === symbol;
+    });
+
+    stocksToUpdate.distributionLaw = law;
+    io.emit("distribution-law-updated", symbol, law);
+  });
+
 });
+
+function getUniformRandom(maxStep) {
+  let num = Math.random();
+  // Scale
+  num *= 2 * maxStep;
+  // Shift
+  num -= maxStep;
+  return Math.round(num);
+}
+
+function getNormalRandom(maxStep) {
+  // Box-Muller transformation (uniform -> normal)
+  let num = Math.sqrt( -2.0 * Math.log(1 - Math.random()) ) * Math.cos( 2.0 * Math.PI * Math.random())
+
+  num = num / 10.0 + 0.5 // Translate to 0 -> 1
+  if (num > 1 || num < 0) {
+    num = getNormalRandom(maxStep) // resample between 0 and 1 if out of range
+  } else {
+    num *= 2 * maxStep;
+    num -= maxStep;
+  }
+
+  return Math.round(num);
+}
 
 
 

@@ -2,6 +2,6 @@
     "settings": {
         "startTime": "2021-11-24T12:30",
         "endTime": "2021-11-24T13:00",
-        "recalcCostDelaySec": 60
+        "recalcCostDelaySec": 2
     }
 }
