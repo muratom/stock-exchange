@@ -6,7 +6,6 @@ class Portfolio extends Component {
     super(props);
   }
 
-  // TODO: add TOTAL COST field
   render() {
     return (
       <table>
@@ -14,15 +13,21 @@ class Portfolio extends Component {
         <tr>
           <th>SYMBOL</th>
           <th>AMOUNT</th>
-          {/*<th>TOTAL COST</th>*/}
+          <th>TOTAL COST</th>
         </tr>
         </thead>
         <tbody>
         {
           this.props.purchasedStocks.map((stocks, i) => {
-            return <PortfolioItem key={i}
-                                  symbol={stocks.symbol}
-                                  amount={stocks.amount}/>
+            let curStocks = this.props.stocks.find(obj => stocks.symbol === obj.symbol);
+            if (curStocks) {
+              return <PortfolioItem key={i}
+                                    symbol={stocks.symbol}
+                                    amount={stocks.amount}
+                                    price={curStocks.price}/>
+            } else {
+              return null;
+            }
           })
         }
         </tbody>

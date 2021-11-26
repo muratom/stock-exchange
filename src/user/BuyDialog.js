@@ -11,14 +11,14 @@ export default function BuyDialog({ symbol, open, handleClose, handleBuy }) {
   const [amount, setAmount] = useState(1);
 
   const handleChange = (e) => {
-    setAmount(Number(e.target.value));
+    setAmount(e.target.value);
   }
 
   const handleSubmit = (e) => {
     if (!amount || amount < 1) {
       alert("Number of stocks must be greater than 0");
     } else {
-      handleBuy(symbol, amount);
+      handleBuy(symbol, Number(amount));
     }
     setAmount(1);
   }

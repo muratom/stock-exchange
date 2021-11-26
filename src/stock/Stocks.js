@@ -6,20 +6,20 @@ class Stocks extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      stocks: []
-    };
+    // this.state = {
+    //   stocks: []
+    // };
   }
 
   componentDidMount() {
-    console.log("Fetching the stocks from the server");
-    fetch(`http://localhost:8000/stocks`, { method: "GET" })
-      .then(res => res.json())
-      .then(res => {
-        this.setState((state, props) => {
-          return { stocks: res.stocks };
-        });
-      });
+    // console.log("Fetching the stocks from the server");
+    // fetch(`http://localhost:8000/stocks`, { method: "GET" })
+    //   .then(res => res.json())
+    //   .then(res => {
+    //     this.setState((state, props) => {
+    //       return { stocks: res.stocks };
+    //     });
+    //   });
   }
 
   render() {
@@ -37,7 +37,7 @@ class Stocks extends Component {
             </tr>
           </thead>
           <tbody>
-            { this.state.stocks.map((obj, i) =>
+            { this.props.stocks.map((obj, i) =>
               <StocksItem key={i}
                           stock={obj}
                           socket={this.props.socket}

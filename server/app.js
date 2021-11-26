@@ -31,8 +31,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Routes
 const loginRouter = require("./routes/login");
 app.use("/", loginRouter);
-const usersRouter = require("./routes/users");
-app.use("/user", usersRouter);
+// const usersRouter = require("./routes/users");
+// app.use("/user", usersRouter);
 const stocksRouter = require("./routes/stocks");
 app.use("/stocks", stocksRouter);
 
@@ -74,6 +74,10 @@ io.on("connection", (socket) => {
       status: "OK",
       user: user
     });
+  });
+
+  socket.on("get-stocks", () => {
+    socket.emit("send-stocks", stocks);
   });
 
   socket.on("buy-stocks-request", (symbol, requestedAmount) => {

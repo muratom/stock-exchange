@@ -30,6 +30,7 @@ class User extends Component {
 
     this.state = {
       user: {},
+      stocks: [],
       isDialogOpen: false,
       currentStockSymbol: "",
     };
@@ -45,11 +46,17 @@ class User extends Component {
     this.setupSocket();
     this.urlUsername = this.props.params.username;
     this.getUser(this.urlUsername);
+    this.getStocks();
   }
 
   getUser(username) {
-    console.log("Fetching the data from the server");
+    console.log("Fetching the user data from the server");
     this.socket.emit("get-user", username);
+  }
+
+  getStocks() {
+    console.log("Fetching the stocks data from the server");
+    this.socket.emit("get-stocks");
   }
 
   setupSocket() {
@@ -71,6 +78,12 @@ class User extends Component {
         default:
           break;
       }
+    });
+
+    this.socket.on("send-stocks", (res) => {
+      this.setState((state, props) => {
+        return { stocks: res }
+      });
     });
 
     this.socket.on("buy-stocks-rejected", (msg) => {
@@ -108,12 +121,14 @@ class User extends Component {
   render() {
     return (
       <div>
-        <h3>Page of { this.urlUsername }</h3>
-        <p>Start budget: { this.state.user.startBudget }</p>
-        <p>Current budget: { this.state.user.curBudget }</p>
+        <h3>Welcome, { this.state.user.firstName }!</h3>
+        <p>Start budget: ${ this.state.user.startBudget }</p>
+        <p>Current budget: ${ this.state.user.curBudget }</p>
         <Stocks socket={this.socket}
+                stocks={this.state.stocks}
                 handleOpen={this.handleOpen}/>
-        <Portfolio purchasedStocks={this.state.user.purchasedStocks ? this.state.user.purchasedStocks : []}/>
+        <Portfolio purchasedStocks={this.state.user.purchasedStocks ? this.state.user.purchasedStocks : []}
+                   stocks={this.state.stocks}/>
         <BuyDialog symbol={this.state.currentStockSymbol}
                    open={this.state.isDialogOpen}
                    handleClose={this.handleClose}

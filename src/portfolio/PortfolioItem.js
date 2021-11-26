@@ -33,6 +33,7 @@ class PortfolioItem extends Component {
       <tr>
         <td>{this.props.symbol}</td>
         <td>{this.state.amount}</td>
+        <td>{this.state.amount * this.props.price}</td>
       </tr>
     )
   }
