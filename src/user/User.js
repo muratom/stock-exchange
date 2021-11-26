@@ -6,6 +6,8 @@ import {Stocks} from "../stock/Stocks";
 import BuyDialog from "./BuyDialog";
 import {Portfolio} from "../portfolio/Portfolio";
 import SellDialog from "./SellDialog";
+import {Button, Card, CardContent, CardHeader} from "@mui/material";
+import {green} from "@mui/material/colors";
 
 const withRouter = WrappedComponent => props => {
   const params = useParams();
@@ -172,31 +174,44 @@ class User extends Component {
 
   render() {
     let profitPercentage = Math.round((this.state.user.curBudget - this.state.user.startBudget) / this.state.user.startBudget * 10000) / 100;
+    let profitColor = "blue";
     if (profitPercentage > 0) {
       profitPercentage = `+${profitPercentage}`;
-    } else {
-      profitPercentage = `-${profitPercentage}`;
+      profitColor = "green";
+    } else if (profitPercentage < 0) {
+      profitPercentage = `${profitPercentage}`;
+      profitColor = "red";
     }
     return (
-      <div>
-        <h3>Welcome, { this.state.user.firstName }!</h3>
-        <p>Start budget: ${ this.state.user.startBudget }</p>
-        <p>Current budget: ${ this.state.user.curBudget } ({profitPercentage}%)</p>
-        <Stocks socket={this.socket}
-                stocks={this.state.stocks}
-                handleBuyDialogOpen={this.handleBuyDialogOpen}/>
-        <Portfolio purchasedStocks={this.state.user.purchasedStocks ? this.state.user.purchasedStocks : []}
-                   stocks={this.state.stocks}
-                   handleSellDialogOpen={this.handleSellDialogOpen}/>
-        <BuyDialog symbol={this.state.currentStockSymbol}
-                   open={this.state.isBuyDialogOpen}
-                   handleClose={this.handleClose}
-                   handleBuy={this.handleBuy}/>
-        <SellDialog symbol={this.state.currentStockSymbol}
-                    open={this.state.isSellDialogOpen}
-                    handleClose={this.handleClose}
-                    handleSell={this.handleSell}/>
-      </div>
+      <Card variant="outlined" style={{ width: "80%", margin: "10px auto" }}>
+        <CardHeader title={<strong>{this.state.user.firstName} {this.state.user.lastName}</strong>}
+                    subheader={this.state.user.username}
+                    action={
+                      <div>
+                        <p><strong>START BUDGET:</strong> <span style={{ color: "blue" }}>${ this.state.user.startBudget }</span></p>
+                        <p><strong>CURRENT BUDGET:</strong> <span style={{ color: profitColor }}>${ this.state.user.curBudget } ({profitPercentage}%)</span></p>
+                      </div>
+                    }
+        />
+
+        <CardContent>
+
+          <Stocks socket={this.socket}
+                  stocks={this.state.stocks}
+                  handleBuyDialogOpen={this.handleBuyDialogOpen}/>
+          <Portfolio purchasedStocks={this.state.user.purchasedStocks ? this.state.user.purchasedStocks : []}
+                     stocks={this.state.stocks}
+                     handleSellDialogOpen={this.handleSellDialogOpen}/>
+          <BuyDialog symbol={this.state.currentStockSymbol}
+                     open={this.state.isBuyDialogOpen}
+                     handleClose={this.handleClose}
+                     handleBuy={this.handleBuy}/>
+          <SellDialog symbol={this.state.currentStockSymbol}
+                      open={this.state.isSellDialogOpen}
+                      handleClose={this.handleClose}
+                      handleSell={this.handleSell}/>
+        </CardContent>
+      </Card>
     )
   }
 }

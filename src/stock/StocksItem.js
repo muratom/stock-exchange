@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {MenuItem, Select} from "@mui/material";
+import {Button, MenuItem, Select, TableCell, TableRow} from "@mui/material";
 // import {io} from "socket.io-client";
 //
 // const SOCKET_URL = "http://localhost:8000";
@@ -19,7 +19,7 @@ class StocksItem extends Component {
     let distLawElem;
     if (this.props.changeDistributionLaw) {
       distLawElem = (
-        <td>
+        <TableCell align="center">
           <Select
             value={this.props.stock.distributionLaw}
             onChange={this.onChange}
@@ -27,26 +27,26 @@ class StocksItem extends Component {
             <MenuItem value="Normal">Normal</MenuItem>
             <MenuItem value="Uniform">Uniform</MenuItem>
           </Select>
-        </td>
+        </TableCell>
 
       );
     } else {
-      distLawElem = <td>{ this.props.stock.distributionLaw }</td>
+      distLawElem = <TableCell align="center">{ this.props.stock.distributionLaw }</TableCell>
     }
     return (
-      <tr>
-        <td>{this.props.stock.symbol}</td>
-        <td>{ this.props.stock.name }</td>
-        <td>{ this.props.stock.amount }</td>
-        <td>${ this.props.stock.price }</td>
-        <td>${ this.props.stock.maxStep }</td>
+      <TableRow>
+        <TableCell align="center">{this.props.stock.symbol}</TableCell>
+        <TableCell align="center">{ this.props.stock.name }</TableCell>
+        <TableCell align="center">{ this.props.stock.amount }</TableCell>
+        <TableCell align="center">${ this.props.stock.price }</TableCell>
+        <TableCell align="center">${ this.props.stock.maxStep }</TableCell>
         { distLawElem }
         {
           this.props.handleBuyDialogOpen
-            ? <td><button onClick={() => { this.props.handleBuyDialogOpen(this.props.stock.symbol) }}>BUY</button></td>
+            ? <TableCell align="center"><Button variant="outlined" onClick={() => { this.props.handleBuyDialogOpen(this.props.stock.symbol) }}>BUY</Button></TableCell>
             : null
         }
-      </tr>
+      </TableRow>
     )
   }
 }

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import {io} from "socket.io-client";
 import {Stocks} from "../stock/Stocks";
 import {Portfolio} from "../portfolio/Portfolio";
+import {Button, Card, CardContent, CardHeader, InputLabel, MenuItem, Select} from "@mui/material";
 
 const SOCKET_URL = "http://localhost:8000";
 
@@ -13,12 +14,14 @@ class Admin extends Component {
 
     this.state = {
       stocks: [],
-      users: []
+      users: [],
+      selectedUser: "None",
     }
 
     this.setupSocket = this.setupSocket.bind(this);
     this.startBidding = this.startBidding.bind(this);
     this.changeDistributionLaw = this.changeDistributionLaw.bind(this);
+    this.onChangeSelectedUser = this.onChangeSelectedUser.bind(this);
   }
 
   componentDidMount() {
@@ -104,25 +107,56 @@ class Admin extends Component {
     this.socket.emit("change-distribution-law", symbol, law);
   }
 
+  onChangeSelectedUser(e) {
+    this.setState({ selectedUser: e.target.value});
+  }
+
   render() {
+    let selectedUserInfo;
+    if (this.state.selectedUser !== "None") {
+      selectedUserInfo = (
+        <div>
+          <p>CURRENT BUDGET: <span style={{color: "green"}}>${this.state.selectedUser.curBudget}</span></p>
+          <Portfolio purchasedStocks={this.state.selectedUser.purchasedStocks ? this.state.selectedUser.purchasedStocks : []}
+                     stocks={this.state.stocks}/>
+        </div>
+      );
+    } else {
+      selectedUserInfo = (
+        <div>
+          <p>Select the user to see information about him</p>
+        </div>
+      );
+    }
+
     return (
-      <div>
-        <h3>Admin's page</h3>
-        <button onClick={this.startBidding}>Start bidding</button>
-        <Stocks socket={this.socket}
-                stocks={this.state.stocks}
-                changeDistributionLaw={this.changeDistributionLaw}/>
-        {
-          this.state.users.map((obj, i) => {
-            return (
-              <div key={i}>
-                <p>{obj.username}: ${obj.curBudget}</p>
-                <Portfolio purchasedStocks={obj.purchasedStocks ? obj.purchasedStocks : []}
-                           stocks={this.state.stocks}/>
-              </div>
-            )
-        })}
-      </div>
+      <Card variant="outlined" style={{ width: "80%", margin: "10px auto" }}>
+        <CardHeader title={<strong>Administrator</strong>}
+                    action={
+                      <Button variant="outlined" onClick={this.startBidding}>Start bidding</Button>
+                    }
+        />
+        <CardContent>
+          <Stocks socket={this.socket}
+                  stocks={this.state.stocks}
+                  changeDistributionLaw={this.changeDistributionLaw}/>
+          <Select
+            value={this.state.selectedUser}
+            onChange={this.onChangeSelectedUser}
+          >
+            <MenuItem value="None" key="-1">None</MenuItem>
+            {
+              this.state.users.map((obj, i) => {
+                return (
+                  <MenuItem value={obj} key={i}>
+                    {obj.username}
+                  </MenuItem>
+                )
+              })}
+          </Select>
+          { selectedUserInfo }
+        </CardContent>
+      </Card>
     )
   }
 }

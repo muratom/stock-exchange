@@ -1,19 +1,20 @@
 import React, { Component } from "react";
+import {Button, TableCell, TableRow} from "@mui/material";
 
 class PortfolioItem extends Component {
   render() {
     return (
-      <tr>
-        <td>{this.props.symbol}</td>
-        <td>{this.props.amount}</td>
-        <td>{this.props.amount * this.props.price}</td>
+      <TableRow>
+        <TableCell align="center">{this.props.symbol}</TableCell>
+        <TableCell align="center">{this.props.amount}</TableCell>
+        <TableCell align="center">${this.props.amount * this.props.price}</TableCell>
         {
           this.props.handleSellDialogOpen &&
-          <td>
-            <button onClick={() => { this.props.handleSellDialogOpen(this.props.symbol) }}>SELL</button>
-          </td>
+          <TableCell align="center">
+            <Button variant="outlined" onClick={() => { this.props.handleSellDialogOpen(this.props.symbol) }}>SELL</Button>
+          </TableCell>
         }
-      </tr>
+      </TableRow>
     )
   }
 }

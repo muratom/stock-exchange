@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { PortfolioItem } from "./PortfolioItem";
+import {Card, CardContent, Table, TableBody, TableCell, TableHead, TableRow} from "@mui/material";
 
 class Portfolio extends Component {
   render() {
@@ -7,31 +8,38 @@ class Portfolio extends Component {
       <div>
         {
           this.props.purchasedStocks.length !== 0 &&
-          <table>
-            <thead>
-            <tr>
-              <th>SYMBOL</th>
-              <th>AMOUNT</th>
-              <th>TOTAL COST</th>
-            </tr>
-            </thead>
-            <tbody>
-            {
-              this.props.purchasedStocks.map((stocks, i) => {
-                let curStocks = this.props.stocks.find(obj => stocks.symbol === obj.symbol);
-                if (curStocks) {
-                  return <PortfolioItem key={i}
-                                        symbol={stocks.symbol}
-                                        amount={stocks.amount}
-                                        price={curStocks.price}
-                                        handleSellDialogOpen={this.props.handleSellDialogOpen ? this.props.handleSellDialogOpen : null}/>
-                } else {
-                  return null;
+          <Card variant="outlined" style={{ margin: "10px auto" }}>
+            <CardContent>
+              <Table>
+                <TableHead style={{ backgroundColor: "#1e88e5" }}>
+                  <TableRow>
+                    <TableCell align="center" style={{ color: "white" }}>SYMBOL</TableCell>
+                    <TableCell align="center" style={{ color: "white" }}>AMOUNT</TableCell>
+                    <TableCell align="center" style={{ color: "white" }}>TOTAL COST</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                {
+                  this.props.purchasedStocks.map((stocks, i) => {
+                    let curStocks = this.props.stocks.find(obj => stocks.symbol === obj.symbol);
+                    if (curStocks) {
+                      return <PortfolioItem key={i}
+                                            symbol={stocks.symbol}
+                                            amount={stocks.amount}
+                                            price={curStocks.price}
+                                            handleSellDialogOpen={this.props.handleSellDialogOpen ? this.props.handleSellDialogOpen : null}/>
+                    } else {
+                      return null;
+                    }
+                  })
                 }
-              })
-            }
-            </tbody>
-          </table>
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        }
+        {
+          this.props.purchasedStocks.length === 0 && <p>User has no purchased stocks</p>
         }
       </div>
     )
