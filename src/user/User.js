@@ -100,13 +100,15 @@ class User extends Component {
       let stockInd = this.state.stocks.findIndex(obj => obj.symbol === exchangeStocks.symbol);
       let stocks = [...this.state.stocks];
       stocks[stockInd] = exchangeStocks;
-
       this.setState((state, props) => {
-        return {
-          user: user,
-          stocks: stocks,
-        };
+        return { stocks: stocks }
       });
+
+      if (user.username === this.state.user.username) {
+        this.setState((state, props) => {
+          return { user: user };
+        });
+      }
     });
 
     this.socket.on("sell-stocks-rejected", (msg) => {
@@ -114,19 +116,20 @@ class User extends Component {
     });
 
     this.socket.on("sell-stocks-accepted", (user, exchangeStocks) => {
-      console.log("sell-stocks-accepted", user);
       this.handleClose();
 
       let stockInd = this.state.stocks.findIndex(obj => obj.symbol === exchangeStocks.symbol);
       let stocks = [...this.state.stocks];
       stocks[stockInd] = exchangeStocks;
-
       this.setState((state, props) => {
-        return {
-          user: user,
-          stocks: stocks,
-        };
+        return { stocks: stocks }
       });
+
+      if (user.username === this.state.user.username) {
+        this.setState((state, props) => {
+          return { user: user };
+        });
+      }
     });
   }
 

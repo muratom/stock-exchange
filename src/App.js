@@ -10,10 +10,6 @@ import User from "./user/User";
 
 // TODO: use Redux to add routing capability
 export class App extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <div>

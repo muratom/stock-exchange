@@ -33,8 +33,8 @@ const loginRouter = require("./routes/login");
 app.use("/", loginRouter);
 // const usersRouter = require("./routes/users");
 // app.use("/user", usersRouter);
-const stocksRouter = require("./routes/stocks");
-app.use("/stocks", stocksRouter);
+// const stocksRouter = require("./routes/stocks");
+// app.use("/stocks", stocksRouter);
 
 // Socket
 let activeUsers = [];
@@ -114,7 +114,7 @@ io.on("connection", (socket) => {
     // Update the amount of stocks
     exchangeStocksToBuy.amount -= requestedAmount;
 
-    socket.emit("buy-stocks-accepted", user, exchangeStocksToBuy);
+    io.emit("buy-stocks-accepted", user, exchangeStocksToBuy);
   });
 
   socket.on("sell-stocks-request", (symbol, amount) => {
@@ -143,7 +143,7 @@ io.on("connection", (socket) => {
     // Delete unnecessary data
     user.purchasedStocks = user.purchasedStocks.filter(obj => obj.amount !== 0);
 
-    socket.emit("sell-stocks-accepted", user, exchangeStocks)
+    io.emit("sell-stocks-accepted", user, exchangeStocks)
   });
 });
 
