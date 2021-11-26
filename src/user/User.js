@@ -5,6 +5,7 @@ import { io } from "socket.io-client";
 import {Stocks} from "../stock/Stocks";
 import BuyDialog from "./BuyDialog";
 import {Portfolio} from "../portfolio/Portfolio";
+import SellDialog from "./SellDialog";
 
 const withRouter = WrappedComponent => props => {
   const params = useParams();
@@ -31,15 +32,18 @@ class User extends Component {
     this.state = {
       user: {},
       stocks: [],
-      isDialogOpen: false,
+      isBuyDialogOpen: false,
+      isSellDialogOpen: false,
       currentStockSymbol: "",
     };
 
     this.getUser = this.getUser.bind(this);
     this.setupSocket = this.setupSocket.bind(this);
-    this.handleOpen = this.handleOpen.bind(this);
+    this.handleBuyDialogOpen = this.handleBuyDialogOpen.bind(this);
+    this.handleSellDialogOpen = this.handleSellDialogOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleBuy = this.handleBuy.bind(this);
+    this.handleSell = this.handleSell.bind(this);
   }
 
   componentDidMount() {
@@ -90,49 +94,93 @@ class User extends Component {
       alert(msg);
     });
 
-    this.socket.on("buy-stocks-accepted", (user, stocks) => {
-      console.log(`${user.username} bought ${stocks.symbol} stocks`);
+    this.socket.on("buy-stocks-accepted", (user, exchangeStocks) => {
       this.handleClose();
+
+      let stockInd = this.state.stocks.findIndex(obj => obj.symbol === exchangeStocks.symbol);
+      let stocks = [...this.state.stocks];
+      stocks[stockInd] = exchangeStocks;
+
       this.setState((state, props) => {
-        console.log("UPDATED USER", user);
-        return { user: user };
+        return {
+          user: user,
+          stocks: stocks,
+        };
+      });
+    });
+
+    this.socket.on("sell-stocks-rejected", (msg) => {
+      alert(msg);
+    });
+
+    this.socket.on("sell-stocks-accepted", (user, exchangeStocks) => {
+      console.log("sell-stocks-accepted", user);
+      this.handleClose();
+
+      let stockInd = this.state.stocks.findIndex(obj => obj.symbol === exchangeStocks.symbol);
+      let stocks = [...this.state.stocks];
+      stocks[stockInd] = exchangeStocks;
+
+      this.setState((state, props) => {
+        return {
+          user: user,
+          stocks: stocks,
+        };
       });
     });
   }
 
   // componentDidUpdate(prevProps, prevState) {}
 
-  handleOpen(symbol) {
+  handleBuyDialogOpen(symbol) {
     this.setState({
       currentStockSymbol: symbol,
-      isDialogOpen: true
+      isBuyDialogOpen: true
     });
   }
 
+  handleSellDialogOpen(symbol) {
+    this.setState({
+      currentStockSymbol: symbol,
+      isSellDialogOpen: true
+    })
+  }
+
   handleClose() {
-    this.setState({ isDialogOpen: false });
+    this.setState({
+      isSellDialogOpen: false,
+      isBuyDialogOpen: false,
+    });
   }
 
   handleBuy(symbol, amount) {
     this.socket.emit("buy-stocks-request", symbol, amount);
   }
 
-  // TODO: add a profit in percentage
+  handleSell(symbol, amount) {
+    this.socket.emit("sell-stocks-request", symbol, amount);
+  }
+
   render() {
     return (
       <div>
         <h3>Welcome, { this.state.user.firstName }!</h3>
         <p>Start budget: ${ this.state.user.startBudget }</p>
-        <p>Current budget: ${ this.state.user.curBudget }</p>
+        <p>Current budget: ${ this.state.user.curBudget } ({Math.round((this.state.user.curBudget - this.state.user.startBudget) / this.state.user.startBudget * 10000) / 100}%)</p>
         <Stocks socket={this.socket}
                 stocks={this.state.stocks}
-                handleOpen={this.handleOpen}/>
+                handleBuyDialogOpen={this.handleBuyDialogOpen}/>
         <Portfolio purchasedStocks={this.state.user.purchasedStocks ? this.state.user.purchasedStocks : []}
-                   stocks={this.state.stocks}/>
+                   stocks={this.state.stocks}
+                   handleSellDialogOpen={this.handleSellDialogOpen}/>
         <BuyDialog symbol={this.state.currentStockSymbol}
-                   open={this.state.isDialogOpen}
+                   open={this.state.isBuyDialogOpen}
                    handleClose={this.handleClose}
                    handleBuy={this.handleBuy}/>
+        <SellDialog symbol={this.state.currentStockSymbol}
+                    open={this.state.isSellDialogOpen}
+                    handleClose={this.handleClose}
+                    handleSell={this.handleSell}/>
       </div>
     )
   }

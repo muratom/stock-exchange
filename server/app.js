@@ -82,15 +82,15 @@ io.on("connection", (socket) => {
 
   socket.on("buy-stocks-request", (symbol, requestedAmount) => {
     let user = users.find(obj => obj.username === socket["username"]);
-    let curStocks = stocks.find(obj => {
+    let exchangeStocksToBuy = stocks.find(obj => {
       return obj.symbol === symbol;
     });
 
-    if (requestedAmount > curStocks.amount) {
+    if (requestedAmount > exchangeStocksToBuy.amount) {
       socket.emit("buy-stocks-rejected", "Exceeding the available amount of stocks");
       return;
     }
-    if (user.curBudget < curStocks.price * requestedAmount) {
+    if (user.curBudget < exchangeStocksToBuy.price * requestedAmount) {
       socket.emit("buy-stocks-rejected", "Not enough funds");
       return;
     }
@@ -109,12 +109,41 @@ io.on("connection", (socket) => {
     }
 
     // Update the current user's budget
-    user.curBudget -= curStocks.price * requestedAmount;
+    user.curBudget -= exchangeStocksToBuy.price * requestedAmount;
 
     // Update the amount of stocks
-    curStocks.amount -= requestedAmount;
+    exchangeStocksToBuy.amount -= requestedAmount;
 
-    socket.emit("buy-stocks-accepted", user, curStocks);
+    socket.emit("buy-stocks-accepted", user, exchangeStocksToBuy);
+  });
+
+  socket.on("sell-stocks-request", (symbol, amount) => {
+    let user = users.find(obj => obj.username === socket["username"]);
+    // Invariant: stockForSale isn't undefined
+    let portfolioStocksForSale = user.purchasedStocks.find(obj => {
+      return obj.symbol === symbol;
+    });
+
+    if (portfolioStocksForSale.amount < amount) {
+      socket.emit("sell-stocks-rejected", "Exceeding the available amount of stocks");
+      return;
+    }
+
+    let exchangeStocks = stocks.find(obj => obj.symbol === symbol);
+
+    // Update the current user's budget
+    user.curBudget += amount * exchangeStocks.price;
+
+    // Update amount of purchased stocks
+    portfolioStocksForSale.amount -= amount;
+
+    // Update amount of stocks in the list
+    exchangeStocks.amount += amount;
+
+    // Delete unnecessary data
+    user.purchasedStocks = user.purchasedStocks.filter(obj => obj.amount !== 0);
+
+    socket.emit("sell-stocks-accepted", user, exchangeStocks)
   });
 });
 

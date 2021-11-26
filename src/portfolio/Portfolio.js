@@ -2,10 +2,6 @@ import React, { Component } from "react";
 import { PortfolioItem } from "./PortfolioItem";
 
 class Portfolio extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <table>
@@ -24,7 +20,8 @@ class Portfolio extends Component {
               return <PortfolioItem key={i}
                                     symbol={stocks.symbol}
                                     amount={stocks.amount}
-                                    price={curStocks.price}/>
+                                    price={curStocks.price}
+                                    handleSellDialogOpen={this.props.handleSellDialogOpen}/>
             } else {
               return null;
             }
