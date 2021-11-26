@@ -14,8 +14,8 @@ router.get("/:username", (req, res) => {
   }
 
   // Add new properties
-  user.curBudget = user.budget;
-  user.stocks = {};
+  user.curBudget = user.startBudget;
+  user.purchasedStocks = [];
 
   res.json(user);
 });

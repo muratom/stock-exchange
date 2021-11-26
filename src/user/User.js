@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import {useParams } from "react-router";
 
 import { io } from "socket.io-client";
+import {Stocks} from "../stock/Stocks";
+import BuyDialog from "./BuyDialog";
+import {Portfolio} from "../portfolio/Portfolio";
 
 const withRouter = WrappedComponent => props => {
   const params = useParams();
@@ -22,44 +25,99 @@ class User extends Component {
   constructor(props) {
     super(props);
 
-    this.socket = io(SOCKET_URL);
     this.urlUsername = "";
+    this.socket = io(SOCKET_URL)
 
     this.state = {
-      user: {}
+      user: {},
+      isDialogOpen: false,
+      currentStockSymbol: "",
     };
 
-    this.fetchUserData = this.fetchUserData.bind(this);
+    this.getUser = this.getUser.bind(this);
+    this.setupSocket = this.setupSocket.bind(this);
+    this.handleOpen = this.handleOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleBuy = this.handleBuy.bind(this);
   }
 
   componentDidMount() {
+    this.setupSocket();
     this.urlUsername = this.props.params.username;
-    this.fetchUserData(this.urlUsername);
+    this.getUser(this.urlUsername);
   }
 
-  fetchUserData(username) {
+  getUser(username) {
     console.log("Fetching the data from the server");
-    fetch(`${SOCKET_URL}/user/${username}`, { method: "GET" })
-      .then(res => res.json())
-      .then(res => {
-        this.setState((state, props) => {
-          return { user: res }
-        }, () => {
-          this.socket.on("connect", () => {
-            console.log("Client: connection is established");
+    this.socket.emit("get-user", username);
+  }
+
+  setupSocket() {
+    this.socket.on("connect", () => {
+      console.log("Client: connection is established");
+    });
+
+    this.socket.on("send-user", (res) => {
+      switch (res.status) {
+        case "OK":
+          this.setState((state, props) => {
+            return { user: res.user }
           });
           this.socket.emit("greet-user", this.state.user);
-        });
+          break;
+        case "Error":
+          alert(res.msg)
+          break;
+        default:
+          break;
+      }
+    });
+
+    this.socket.on("buy-stocks-rejected", (msg) => {
+      alert(msg);
+    });
+
+    this.socket.on("buy-stocks-accepted", (user, stocks) => {
+      console.log(`${user.username} bought ${stocks.symbol} stocks`);
+      this.handleClose();
+      this.setState((state, props) => {
+        console.log("UPDATED USER", user);
+        return { user: user };
       });
+    });
   }
 
-  componentDidUpdate(prevProps, prevState) {}
+  // componentDidUpdate(prevProps, prevState) {}
 
+  handleOpen(symbol) {
+    this.setState({
+      currentStockSymbol: symbol,
+      isDialogOpen: true
+    });
+  }
+
+  handleClose() {
+    this.setState({ isDialogOpen: false });
+  }
+
+  handleBuy(symbol, amount) {
+    this.socket.emit("buy-stocks-request", symbol, amount);
+  }
+
+  // TODO: add a profit in percentage
   render() {
     return (
       <div>
         <h3>Page of { this.urlUsername }</h3>
-        {/*<button onClick={click}>Click me</button>*/}
+        <p>Start budget: { this.state.user.startBudget }</p>
+        <p>Current budget: { this.state.user.curBudget }</p>
+        <Stocks socket={this.socket}
+                handleOpen={this.handleOpen}/>
+        <Portfolio purchasedStocks={this.state.user.purchasedStocks ? this.state.user.purchasedStocks : []}/>
+        <BuyDialog symbol={this.state.currentStockSymbol}
+                   open={this.state.isDialogOpen}
+                   handleClose={this.handleClose}
+                   handleBuy={this.handleBuy}/>
       </div>
     )
   }

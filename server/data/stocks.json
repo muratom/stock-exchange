@@ -3,7 +3,7 @@
         {
             "name": "Amazon",
             "symbol": "AMZN",
-            "price": 3676.57,
+            "price": 3676,
             "amount": 506440000,
             "maxStep": 100,
             "distributionLaw": "Normal"
@@ -11,7 +11,7 @@
         {
             "name": "Alphabet",
             "symbol": "GOOGL",
-            "price": 2978.53,
+            "price": 2978,
             "amount": 300810000,
             "maxStep": 40,
             "distributionLaw": "Normal"
@@ -19,7 +19,7 @@
         {
             "name": "Yandex",
             "symbol": "YNDX",
-            "price": 81.05,
+            "price": 81,
             "amount": 323800000,
             "maxStep": 20,
             "distributionLaw": "Normal"
@@ -27,7 +27,7 @@
         {
             "name": "Apple",
             "symbol": "AAPL",
-            "price": 160.55,
+            "price": 160,
             "amount": 16530170000,
             "maxStep": 10,
             "distributionLaw": "Normal"

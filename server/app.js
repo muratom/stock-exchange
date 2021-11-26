@@ -33,6 +33,8 @@ const loginRouter = require("./routes/login");
 app.use("/", loginRouter);
 const usersRouter = require("./routes/users");
 app.use("/user", usersRouter);
+const stocksRouter = require("./routes/stocks");
+app.use("/stocks", stocksRouter);
 
 // Socket
 let activeUsers = [];
@@ -41,10 +43,74 @@ let users = require("./data/users.json").users;
 let stocks = require("./data/stocks.json").stocks;
 let settings = require("./data/settings.json").settings;
 
+users.forEach(user => {
+  user.curBudget = user.startBudget;
+  user.purchasedStocks = [];
+});
+
 io.on("connection", (socket) => {
-  socket.on("greet-user", (user) => {
+  socket.on("greet-user", user => {
     activeUsers.push(user);
+    socket["username"] = user.username;
     console.log("Add user", user.username);
+  });
+
+  socket.on("disconnect", () => {
+    activeUsers.filter(obj => {
+      return obj.username !== socket["username"];
+    });
+  });
+
+  socket.on("get-user", (username) => {
+    let user = users.find(obj => obj.username === username);
+    if (!user) {
+      socket.emit("send-user", {
+        status: "Error",
+        msg: "User isn't found"
+      });
+      return;
+    }
+    socket.emit("send-user", {
+      status: "OK",
+      user: user
+    });
+  });
+
+  socket.on("buy-stocks-request", (symbol, requestedAmount) => {
+    let user = users.find(obj => obj.username === socket["username"]);
+    let curStocks = stocks.find(obj => {
+      return obj.symbol === symbol;
+    });
+
+    if (requestedAmount > curStocks.amount) {
+      socket.emit("buy-stocks-rejected", "Exceeding the available amount of stocks");
+      return;
+    }
+    if (user.curBudget < curStocks.price * requestedAmount) {
+      socket.emit("buy-stocks-rejected", "Not enough funds");
+      return;
+    }
+
+    // Update list of the purchased stocks
+    let userStock = user.purchasedStocks.find(stock => {
+      return stock.symbol === symbol;
+    });
+    if (!userStock) {
+      user.purchasedStocks.push({
+        symbol: symbol,
+        amount: requestedAmount
+      });
+    } else {
+      userStock.amount += requestedAmount;
+    }
+
+    // Update the current user's budget
+    user.curBudget -= curStocks.price * requestedAmount;
+
+    // Update the amount of stocks
+    curStocks.amount -= requestedAmount;
+
+    socket.emit("buy-stocks-accepted", user, curStocks);
   });
 });
 
