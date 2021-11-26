@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import {MenuItem, Select} from "@mui/material";
 // import {io} from "socket.io-client";
 //
 // const SOCKET_URL = "http://localhost:8000";
@@ -19,10 +20,13 @@ class StocksItem extends Component {
     if (this.props.changeDistributionLaw) {
       distLawElem = (
         <td>
-          <select onChange={this.onChange}>
-            <option value="Normal">Normal</option>
-            <option value="Uniform">Uniform</option>
-          </select>
+          <Select
+            value={this.props.stock.distributionLaw}
+            onChange={this.onChange}
+          >
+            <MenuItem value="Normal">Normal</MenuItem>
+            <MenuItem value="Uniform">Uniform</MenuItem>
+          </Select>
         </td>
 
       );

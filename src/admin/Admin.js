@@ -108,7 +108,6 @@ class Admin extends Component {
     return (
       <div>
         <h3>Admin's page</h3>
-        <button onClick={() => { console.log(this.state.stocks) }}>Check</button>
         <button onClick={this.startBidding}>Start bidding</button>
         <Stocks socket={this.socket}
                 stocks={this.state.stocks}
