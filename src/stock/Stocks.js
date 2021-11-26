@@ -3,9 +3,6 @@ import React, { Component } from "react";
 import { StocksItem } from "./StocksItem";
 
 class Stocks extends Component {
-  componentDidMount() {
-  }
-
   render() {
     return (
       <div>
@@ -25,7 +22,8 @@ class Stocks extends Component {
               <StocksItem key={i}
                           stock={obj}
                           socket={this.props.socket}
-                          handleBuyDialogOpen={this.props.handleBuyDialogOpen}/>) }
+                          handleBuyDialogOpen={this.props.handleBuyDialogOpen ? this.props.handleBuyDialogOpen : null}
+                          changeDistributionLaw={this.props.changeDistributionLaw}/>) }
           </tbody>
 
         </table>

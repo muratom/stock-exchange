@@ -7,32 +7,28 @@ class StocksItem extends Component {
   constructor(props) {
     super(props);
 
-    // this.state = {
-    //   amount: this.props.stock.amount,
-    //   pricePerOne: this.props.stock.price,
-    // }
-    //
-    // this.setupSocket = this.setupSocket.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
-  // componentDidMount() {
-  //   this.setupSocket();
-  // }
-  //
-  // setupSocket() {
-  //   this.props.socket.on("buy-stocks-accepted", (user, stocks) => {
-  //     if (stocks.symbol === this.props.stock.symbol) {
-  //       this.setState((state, props) => {
-  //         return {
-  //           amount: stocks.amount,
-  //           pricePerOne: stocks.price
-  //         };
-  //       });
-  //     }
-  //   });
-  // }
+  onChange(e) {
+    this.props.changeDistributionLaw(this.props.stock.symbol, e.target.value);
+  }
 
   render() {
+    let distLawElem;
+    if (this.props.changeDistributionLaw) {
+      distLawElem = (
+        <td>
+          <select onChange={this.onChange}>
+            <option value="Normal">Normal</option>
+            <option value="Uniform">Uniform</option>
+          </select>
+        </td>
+
+      );
+    } else {
+      distLawElem = <td>{ this.props.stock.distributionLaw }</td>
+    }
     return (
       <tr>
         <td>{this.props.stock.symbol}</td>
@@ -40,10 +36,12 @@ class StocksItem extends Component {
         <td>{ this.props.stock.amount }</td>
         <td>${ this.props.stock.price }</td>
         <td>${ this.props.stock.maxStep }</td>
-        <td>{ this.props.stock.distributionLaw }</td>
-        <td>
-          <button onClick={() => { this.props.handleBuyDialogOpen(this.props.stock.symbol) }}>BUY</button>
-        </td>
+        { distLawElem }
+        {
+          this.props.handleBuyDialogOpen
+            ? <td><button onClick={() => { this.props.handleBuyDialogOpen(this.props.stock.symbol) }}>BUY</button></td>
+            : null
+        }
       </tr>
     )
   }
