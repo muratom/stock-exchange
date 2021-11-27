@@ -10,8 +10,6 @@ class Admin extends Component {
   constructor(props) {
     super(props);
 
-    this.socket = io(SOCKET_URL)
-
     this.state = {
       stocks: [],
       users: [],
@@ -33,6 +31,7 @@ class Admin extends Component {
   }
 
   setupSocket() {
+    this.socket = io(SOCKET_URL)
     this.socket.on("connect", () => {
       console.log("Admin: connection is established");
     });

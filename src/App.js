@@ -4,7 +4,7 @@ import {BrowserRouter as Router, Navigate, Route, Routes} from "react-router-dom
 
 import { Header } from "./header/Header"
 
-import { LoginForm } from "./login/LoginForm";
+import LoginForm from "./login/LoginForm";
 import { Admin } from "./admin/Admin";
 import User from "./user/User";
 
