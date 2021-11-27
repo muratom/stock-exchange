@@ -128,7 +128,7 @@ class Admin extends Component {
           <CardHeader title={<strong>{selectedUser.firstName} {selectedUser.lastName}</strong>}
                       subheader={selectedUser.username}
                       action={
-                        <div>
+                        <div style={{ fontWeight: "bold" }}>
                           CURRENT BUDGET: <span style={{color: "green"}}>${selectedUser.curBudget}</span>
                         </div>
                       }/>

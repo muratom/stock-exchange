@@ -177,16 +177,28 @@ class User extends Component {
       profitPercentage = `${profitPercentage}`;
       profitColor = "red";
     }
+
+    let totalStocksProfit = 0;
+    if (this.state.user.purchasedStocks) {
+      for (let portfolioStock of this.state.user.purchasedStocks) {
+        let correspondingExchangeStock = this.state.stocks.find(obj => obj.symbol === portfolioStock.symbol);
+        if (correspondingExchangeStock) {
+          totalStocksProfit += correspondingExchangeStock.price * portfolioStock.amount;
+        }
+      }
+    }
+
     return (
       <div>
         <Card variant="outlined" style={{ width: "80%", margin: "10px auto" }}>
           <CardHeader title={<strong>{this.state.user.firstName} {this.state.user.lastName}</strong>}
                       subheader={this.state.user.username}
                       action={
-                        <div>
-                          <p><strong>START BUDGET:</strong> <span style={{ color: "blue" }}>${ this.state.user.startBudget }</span></p>
-                          <p><strong>CURRENT BUDGET:</strong> <span style={{ color: profitColor }}>${ this.state.user.curBudget } ({profitPercentage}%)</span></p>
-                        </div>
+                        <table>
+                          <tr><td style={{fontWeight: "bold"}}>START BUDGET:</td><td style={{ color: "blue" }}>${ this.state.user.startBudget }</td></tr>
+                          <tr><td style={{fontWeight: "bold"}}>CURRENT BUDGET:</td><td style={{ color: profitColor }}>${ this.state.user.curBudget } ({profitPercentage}%)</td></tr>
+                          <tr><td style={{fontWeight: "bold"}}>TOTAL PROFIT:</td><td style={{ color: "blue" }}>${ totalStocksProfit }</td></tr>
+                        </table>
                       }
           />
 
@@ -201,7 +213,9 @@ class User extends Component {
           <CardContent>
             <Portfolio purchasedStocks={this.state.user.purchasedStocks ? this.state.user.purchasedStocks : []}
                        stocks={this.state.stocks}
-                       handleSellDialogOpen={this.handleSellDialogOpen}/>
+                       handleSellDialogOpen={this.handleSellDialogOpen}
+                       sellAll={this.handleSell}
+            />
           </CardContent>
         </Card>
 

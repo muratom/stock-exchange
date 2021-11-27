@@ -5,13 +5,14 @@ class PortfolioItem extends Component {
   render() {
     return (
       <TableRow>
-        <TableCell align="center">{this.props.symbol}</TableCell>
+        <TableCell align="center" style={{ fontWeight: "bold", fontSize: "16px", fontStyle: "italic" }}>{this.props.symbol}</TableCell>
         <TableCell align="center">{this.props.amount}</TableCell>
-        <TableCell align="center">${this.props.amount * this.props.price}</TableCell>
+        <TableCell align="center" style={{ color: "green" }}>${this.props.amount * this.props.price}</TableCell>
         {
-          this.props.handleSellDialogOpen &&
-          <TableCell align="center">
-            <Button variant="outlined" onClick={() => { this.props.handleSellDialogOpen(this.props.symbol) }}>SELL</Button>
+          this.props.handleSellDialogOpen && this.props.sellAll &&
+          <TableCell align="center" width="20%">
+            <Button variant="outlined" style={{ marginRight: "5px" }} onClick={() => { this.props.handleSellDialogOpen(this.props.symbol) }}>SELL</Button>
+            <Button variant="outlined" style={{ marginLeft: "5px" }} onClick={() => { this.props.sellAll(this.props.symbol, this.props.amount) }}>SELL ALL</Button>
           </TableCell>
         }
       </TableRow>

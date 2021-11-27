@@ -31,15 +31,15 @@ class StocksItem extends Component {
 
       );
     } else {
-      distLawElem = <TableCell align="center">{ this.props.stock.distributionLaw }</TableCell>
+      distLawElem = <TableCell align="center" style={{ color: "red" }}>{ this.props.stock.distributionLaw }</TableCell>
     }
     return (
       <TableRow>
-        <TableCell align="center">{this.props.stock.symbol}</TableCell>
+        <TableCell align="center" style={{ fontWeight: "bold", fontSize: "16px", fontStyle: "italic" }}>{this.props.stock.symbol}</TableCell>
         <TableCell align="center">{ this.props.stock.name }</TableCell>
         <TableCell align="center">{ this.props.stock.amount }</TableCell>
-        <TableCell align="center">${ this.props.stock.price }</TableCell>
-        <TableCell align="center">${ this.props.stock.maxStep }</TableCell>
+        <TableCell align="center" style={{ color: "green" }}>${ this.props.stock.price }</TableCell>
+        <TableCell align="center" style={{ color: "green" }}>${ this.props.stock.maxStep }</TableCell>
         { distLawElem }
         {
           this.props.handleBuyDialogOpen

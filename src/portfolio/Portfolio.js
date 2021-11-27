@@ -25,7 +25,9 @@ class Portfolio extends Component {
                                           symbol={stocks.symbol}
                                           amount={stocks.amount}
                                           price={curStocks.price}
-                                          handleSellDialogOpen={this.props.handleSellDialogOpen ? this.props.handleSellDialogOpen : null}/>
+                                          handleSellDialogOpen={this.props.handleSellDialogOpen ? this.props.handleSellDialogOpen : null}
+                                          sellAll={this.props.sellAll ? this.props.sellAll : null}
+                    />
                   } else {
                     return null;
                   }
