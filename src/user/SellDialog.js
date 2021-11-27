@@ -14,7 +14,7 @@ export default function SellDialog({ symbol, open, handleClose, handleSell }) {
     setAmount(e.target.value);
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = () => {
     if (!amount || amount < 1) {
       alert("Number of stocks must be greater than 0");
     } else {

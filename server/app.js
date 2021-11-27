@@ -153,6 +153,9 @@ io.on("connection", (socket) => {
   });
 
   socket.on("start-bidding", () => {
+    if (timer) {
+      return;
+    }
     let delta;
     timer = setInterval(() => {
       for (let stock of stocks) {

@@ -1,16 +1,14 @@
-import React, { Component } from 'react';
-
-// import {Button, Input, InputAdornment, TextField} from "@mui/material";
-// import {AccountCircle, Password, PasswordOutlined} from "@mui/icons-material";
+import React, {useRef} from 'react';
 
 import styles from "./LoginForm.module.css"
 
 import { useNavigate } from "react-router-dom";
+import {Button, TextField} from "@mui/material";
 
 // TODO: add visible/invisible option to the password field
-function LoginForm(props) {
-  let username = React.createRef();
-  let password = React.createRef();
+function LoginForm() {
+  let username = useRef();
+  let password = useRef();
   const navigate = useNavigate();
 
   const onSubmit = (e) => {
@@ -46,14 +44,33 @@ function LoginForm(props) {
 
   return (
     <div className={styles.container}>
-      <form onSubmit={onSubmit} className={styles.form}>
-        <label>Username:&nbsp;</label>
-        <input ref={username} className={styles.inputs}/>
-        <br/>
-        <label>Password:&nbsp;</label>
-        <input ref={password} type="password" className={styles.inputs}/>
-        <br/>
-        <button type="submit">Enter</button>
+      <form onSubmit={onSubmit}>
+        <TextField
+          inputRef={username}
+          margin="normal"
+          required
+          fullWidth
+          label="Username"
+          autoFocus
+          autoComplete="username"
+        />
+        <TextField
+          inputRef={password}
+          margin="normal"
+          required
+          fullWidth
+          label="Password"
+          type="password"
+          autoComplete="current-password"
+        />
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+        >
+          Sign In
+        </Button>
       </form>
     </div>
   );

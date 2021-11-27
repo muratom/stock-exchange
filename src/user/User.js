@@ -6,18 +6,15 @@ import {Stocks} from "../stock/Stocks";
 import BuyDialog from "./BuyDialog";
 import {Portfolio} from "../portfolio/Portfolio";
 import SellDialog from "./SellDialog";
-import {Button, Card, CardContent, CardHeader} from "@mui/material";
-import {green} from "@mui/material/colors";
+import {Card, CardContent, CardHeader} from "@mui/material";
 
 const withRouter = WrappedComponent => props => {
   const params = useParams();
-  // etc... other react-router-dom v6 hooks
 
   return (
     <WrappedComponent
       {...props}
       params={params}
-      // etc...
     />
   );
 };
@@ -73,7 +70,7 @@ class User extends Component {
     this.socket.on("send-user", (res) => {
       switch (res.status) {
         case "OK":
-          this.setState((state, props) => {
+          this.setState(() => {
             return { user: res.user }
           });
           this.socket.emit("greet-user", this.state.user);
@@ -87,7 +84,7 @@ class User extends Component {
     });
 
     this.socket.on("send-stocks", (res) => {
-      this.setState((state, props) => {
+      this.setState(() => {
         return { stocks: res }
       });
     });
@@ -102,12 +99,12 @@ class User extends Component {
       let stockInd = this.state.stocks.findIndex(obj => obj.symbol === exchangeStocks.symbol);
       let stocks = [...this.state.stocks];
       stocks[stockInd] = exchangeStocks;
-      this.setState((state, props) => {
+      this.setState(() => {
         return { stocks: stocks }
       });
 
       if (user.username === this.state.user.username) {
-        this.setState((state, props) => {
+        this.setState(() => {
           return { user: user };
         });
       }
@@ -123,25 +120,23 @@ class User extends Component {
       let stockInd = this.state.stocks.findIndex(obj => obj.symbol === exchangeStocks.symbol);
       let stocks = [...this.state.stocks];
       stocks[stockInd] = exchangeStocks;
-      this.setState((state, props) => {
+      this.setState(() => {
         return { stocks: stocks }
       });
 
       if (user.username === this.state.user.username) {
-        this.setState((state, props) => {
+        this.setState(() => {
           return { user: user };
         });
       }
     });
 
     this.socket.on("update-prices", (stocks) => {
-      this.setState((state, props) => {
+      this.setState(() => {
         return { stocks: stocks };
       });
     });
   }
-
-  // componentDidUpdate(prevProps, prevState) {}
 
   handleBuyDialogOpen(symbol) {
     this.setState({

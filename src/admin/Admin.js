@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {io} from "socket.io-client";
 import {Stocks} from "../stock/Stocks";
 import {Portfolio} from "../portfolio/Portfolio";
-import {Button, Card, CardContent, CardHeader, InputLabel, MenuItem, Select} from "@mui/material";
+import {Button, Card, CardContent, CardHeader, MenuItem, Select} from "@mui/material";
 
 const SOCKET_URL = "http://localhost:8000";
 
@@ -37,13 +37,13 @@ class Admin extends Component {
     });
 
     this.socket.on("send-stocks", (res) => {
-      this.setState((state, props) => {
+      this.setState(() => {
         return { stocks: res }
       });
     });
 
     this.socket.on("send-active-users", (users) => {
-      this.setState((state, props) => {
+      this.setState(() => {
         return { users: users }
       });
     });
@@ -52,14 +52,14 @@ class Admin extends Component {
       let stockInd = this.state.stocks.findIndex(obj => obj.symbol === exchangeStocks.symbol);
       let stocks = [...this.state.stocks];
       stocks[stockInd] = exchangeStocks;
-      this.setState((state, props) => {
+      this.setState(() => {
         return { stocks: stocks }
       });
 
       let userInd = this.state.users.findIndex(obj => obj.username === user.username);
       let users = [...this.state.users];
       users[userInd] = user;
-      this.setState((state, props) => {
+      this.setState(() => {
         return { users: users }
       });
     });
@@ -68,20 +68,20 @@ class Admin extends Component {
       let stockInd = this.state.stocks.findIndex(obj => obj.symbol === exchangeStocks.symbol);
       let stocks = [...this.state.stocks];
       stocks[stockInd] = exchangeStocks;
-      this.setState((state, props) => {
+      this.setState(() => {
         return { stocks: stocks }
       });
 
       let userInd = this.state.users.findIndex(obj => obj.username === user.username);
       let users = [...this.state.users];
       users[userInd] = user;
-      this.setState((state, props) => {
+      this.setState(() => {
         return { users: users }
       });
     });
 
     this.socket.on("update-prices", (stocks) => {
-      this.setState((state, props) => {
+      this.setState(() => {
         return { stocks: stocks };
       });
     });
@@ -93,7 +93,7 @@ class Admin extends Component {
         ...stocks[stockInd],
         distributionLaw: law,
       };
-      this.setState((state, props) => {
+      this.setState(() => {
         return { stocks: stocks }
       });
     })
