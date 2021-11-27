@@ -26,7 +26,6 @@ class User extends Component {
     super(props);
 
     this.urlUsername = "";
-    this.socket = io(SOCKET_URL)
 
     this.state = {
       user: {},
@@ -63,6 +62,7 @@ class User extends Component {
   }
 
   setupSocket() {
+    this.socket = io(SOCKET_URL)
     this.socket.on("connect", () => {
       console.log("Client: connection is established");
     });
@@ -195,9 +195,11 @@ class User extends Component {
                       subheader={this.state.user.username}
                       action={
                         <table>
-                          <tr><td style={{fontWeight: "bold"}}>START BUDGET:</td><td style={{ color: "blue" }}>${ this.state.user.startBudget }</td></tr>
-                          <tr><td style={{fontWeight: "bold"}}>CURRENT BUDGET:</td><td style={{ color: profitColor }}>${ this.state.user.curBudget } ({profitPercentage}%)</td></tr>
-                          <tr><td style={{fontWeight: "bold"}}>TOTAL PROFIT:</td><td style={{ color: "blue" }}>${ totalStocksProfit }</td></tr>
+                          <tbody>
+                            <tr><td style={{fontWeight: "bold"}}>START BUDGET:</td><td style={{ color: "blue" }}>${ this.state.user.startBudget }</td></tr>
+                            <tr><td style={{fontWeight: "bold"}}>CURRENT BUDGET:</td><td style={{ color: profitColor }}>${ this.state.user.curBudget } ({profitPercentage}%)</td></tr>
+                            <tr><td style={{fontWeight: "bold"}}>TOTAL PROFIT:</td><td style={{ color: "blue" }}>${ totalStocksProfit }</td></tr>
+                          </tbody>
                         </table>
                       }
           />
