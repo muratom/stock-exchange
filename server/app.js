@@ -49,6 +49,7 @@ users.forEach(user => {
 });
 
 let timer = null;
+let isBiddingStarted = false;
 
 io.on("connection", (socket) => {
   socket.on("greet-user", user => {
@@ -59,6 +60,7 @@ io.on("connection", (socket) => {
 
   socket.on("greet-admin", () => {
     socket.emit("send-active-users", users);
+    socket.emit("send-bidding-state", isBiddingStarted);
     console.log("Add admin");
   });
 
@@ -153,6 +155,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("start-bidding", () => {
+    isBiddingStarted = true;
     if (timer) {
       return;
     }

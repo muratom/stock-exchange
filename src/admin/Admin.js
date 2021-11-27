@@ -15,7 +15,8 @@ class Admin extends Component {
     this.state = {
       stocks: [],
       users: [],
-      selectedUser: "None",
+      selectedUsername: "None",
+      isBiddingStarted: false
     }
 
     this.setupSocket = this.setupSocket.bind(this);
@@ -45,6 +46,12 @@ class Admin extends Component {
     this.socket.on("send-active-users", (users) => {
       this.setState(() => {
         return { users: users }
+      });
+    });
+
+    this.socket.on("send-bidding-state", (isBiddingStarted) => {
+      this.setState(() => {
+        return { isBiddingStarted: isBiddingStarted }
       });
     });
 
@@ -100,6 +107,7 @@ class Admin extends Component {
   }
 
   startBidding() {
+    this.setState(() => { return { isBiddingStarted: true }});
     this.socket.emit("start-bidding");
   }
 
@@ -108,17 +116,24 @@ class Admin extends Component {
   }
 
   onChangeSelectedUser(e) {
-    this.setState({ selectedUser: e.target.value});
+    this.setState({ selectedUsername: e.target.value});
   }
 
   render() {
     let selectedUserInfo;
-    if (this.state.selectedUser !== "None") {
+    if (this.state.selectedUsername !== "None") {
+      let selectedUser = this.state.users.find(obj => obj.username === this.state.selectedUsername);
       selectedUserInfo = (
         <div>
-          <p>CURRENT BUDGET: <span style={{color: "green"}}>${this.state.selectedUser.curBudget}</span></p>
-          <Portfolio purchasedStocks={this.state.selectedUser.purchasedStocks ? this.state.selectedUser.purchasedStocks : []}
-                     stocks={this.state.stocks}/>
+          <CardHeader title={<strong>{selectedUser.firstName} {selectedUser.lastName}</strong>}
+                      subheader={selectedUser.username}
+                      action={
+                        <div>
+                          CURRENT BUDGET: <span style={{color: "green"}}>${selectedUser.curBudget}</span>
+                        </div>
+                      }/>
+          <Portfolio purchasedStocks={selectedUser.purchasedStocks ? selectedUser.purchasedStocks : []}
+          stocks={this.state.stocks}/>
         </div>
       );
     } else {
@@ -130,33 +145,41 @@ class Admin extends Component {
     }
 
     return (
-      <Card variant="outlined" style={{ width: "80%", margin: "10px auto" }}>
-        <CardHeader title={<strong>Administrator</strong>}
-                    action={
-                      <Button variant="outlined" onClick={this.startBidding}>Start bidding</Button>
-                    }
-        />
-        <CardContent>
-          <Stocks socket={this.socket}
-                  stocks={this.state.stocks}
-                  changeDistributionLaw={this.changeDistributionLaw}/>
-          <Select
-            value={this.state.selectedUser}
-            onChange={this.onChangeSelectedUser}
-          >
-            <MenuItem value="None" key="-1">None</MenuItem>
-            {
-              this.state.users.map((obj, i) => {
-                return (
-                  <MenuItem value={obj} key={i}>
-                    {obj.username}
-                  </MenuItem>
-                )
-              })}
-          </Select>
-          { selectedUserInfo }
-        </CardContent>
-      </Card>
+      <div>
+        <Card variant="outlined" style={{ width: "80%", margin: "10px auto" }}>
+          <CardHeader title={<strong>Administrator</strong>}
+                      action={
+                        <Button disabled={this.state.isBiddingStarted} variant="outlined" onClick={this.startBidding}>Start bidding</Button>
+                      }
+          />
+          <CardContent>
+            <Stocks socket={this.socket}
+                    stocks={this.state.stocks}
+                    changeDistributionLaw={this.changeDistributionLaw}/>
+          </CardContent>
+        </Card>
+        <Card variant="outlined" style={{ width: "80%", margin: "10px auto" }}>
+          <CardHeader title={
+            <Select
+              value={this.state.selectedUsername}
+              onChange={this.onChangeSelectedUser}
+            >
+              <MenuItem value="None" key="-1">None</MenuItem>
+              {
+                this.state.users.map((obj, i) => {
+                  return (
+                    <MenuItem value={obj.username} key={i}>
+                      {obj.username}
+                    </MenuItem>
+                  )
+                })}
+            </Select>
+          }/>
+          <CardContent>
+            {selectedUserInfo}
+          </CardContent>
+        </Card>
+      </div>
     )
   }
 }
