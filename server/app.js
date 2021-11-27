@@ -29,12 +29,43 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routes
-const loginRouter = require("./routes/login");
-app.use("/", loginRouter);
-// const usersRouter = require("./routes/users");
-// app.use("/user", usersRouter);
-// const stocksRouter = require("./routes/stocks");
-// app.use("/stocks", stocksRouter);
+app.get("/login", (req, res) => {
+  res.json(users);
+});
+
+app.post("/login", (req, res) => {
+  if (req.body.username === "admin" && req.body.password === "admin") {
+    res.json({
+      redirect: true,
+      url: "/admin"
+    });
+    return;
+  }
+
+  let user = users.find(obj => {
+    return obj.username === req.body.username;
+  });
+  // User isn't found
+  if (!user) {
+    console.log("User isn't found");
+    res.json({
+      redirect: false,
+      message: "User isn't found"
+    });
+    return;
+  }
+  if (user.password === req.body.password) {
+    res.json({
+      redirect: true,
+      url: `/user/${user.username}`
+    });
+  } else {
+    res.json({
+      redirect: false,
+      message: "Incorrect password"
+    })
+  }
+});
 
 // Socket
 let activeUsers = [];
@@ -65,9 +96,14 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    activeUsers.filter(obj => {
-      return obj.username !== socket["username"];
-    });
+    if (socket["username"]) {
+      console.log(`User ${socket["username"]} disconnected`);
+      activeUsers.filter(obj => {
+        return obj.username !== socket["username"];
+      });
+    } else {
+      console.log("Admin disconnected");
+    }
   });
 
   socket.on("get-user", (username) => {
