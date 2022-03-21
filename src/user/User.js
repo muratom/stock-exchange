@@ -33,6 +33,7 @@ class User extends Component {
       isBuyDialogOpen: false,
       isSellDialogOpen: false,
       currentStockSymbol: "",
+      isBiddingStarted: false,
     };
 
     this.getUser = this.getUser.bind(this);
@@ -136,6 +137,12 @@ class User extends Component {
         return { stocks: stocks };
       });
     });
+
+    this.socket.on("bidding-started", () => {
+      this.setState(() => {
+        return { isBiddingStarted: true }
+      })
+    })
   }
 
   handleBuyDialogOpen(symbol) {
@@ -208,7 +215,9 @@ class User extends Component {
 
             <Stocks socket={this.socket}
                     stocks={this.state.stocks}
-                    handleBuyDialogOpen={this.handleBuyDialogOpen}/>
+                    handleBuyDialogOpen={this.handleBuyDialogOpen}
+                    isBiddingStarted={this.state.isBiddingStarted}
+            />
           </CardContent>
         </Card>
         <Card variant="outlined" style={{ width: "80%", margin: "10px auto" }}>

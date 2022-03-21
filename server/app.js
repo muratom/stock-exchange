@@ -220,7 +220,8 @@ io.on("connection", (socket) => {
         }
       }
       io.emit("update-prices", stocks);
-    }, settings.recalcCostDelaySec * 1000)
+    }, settings.recalcCostDelaySec * 1000);
+    io.emit("bidding-started");
   });
 
   socket.on("change-distribution-law", (symbol, law) => {

@@ -24,7 +24,9 @@ class Stocks extends Component {
                           stock={obj}
                           socket={this.props.socket}
                           handleBuyDialogOpen={this.props.handleBuyDialogOpen ? this.props.handleBuyDialogOpen : null}
-                          changeDistributionLaw={this.props.changeDistributionLaw}/>) }
+                          changeDistributionLaw={this.props.changeDistributionLaw}
+                          isBiddingStarted={this.props.isBiddingStarted}
+              />) }
           </TableBody>
         </Table>
       </div>

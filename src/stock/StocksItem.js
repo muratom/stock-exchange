@@ -43,7 +43,7 @@ class StocksItem extends Component {
         { distLawElem }
         {
           this.props.handleBuyDialogOpen
-            ? <TableCell align="center"><Button variant="outlined" onClick={() => { this.props.handleBuyDialogOpen(this.props.stock.symbol) }}>BUY</Button></TableCell>
+            ? <TableCell align="center"><Button variant="outlined" disabled={!this.props.isBiddingStarted} onClick={() => { this.props.handleBuyDialogOpen(this.props.stock.symbol) }}>BUY</Button></TableCell>
             : null
         }
       </TableRow>
